@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('git_clone') {
             steps {
-                git url: 'https://github.com/MegMahajan/devops_capstone2.git/', branch: 'master'
+                git url: 'http://github.com/MegMahajan/devops_capstone2.git/', branch: 'main'
                 echo 'Only git code is commited'
             }
         }
@@ -15,20 +15,22 @@ pipeline {
                 sh 'docker run -it -d ubuntu'
               
                 sh 'docker rm -f $(docker ps -q -a)'
-                sh 'docker build -t megmahajan/test .'
+                sh 'docker build -t megmahajan/devopscap2 .'
             }
         }
-        stage('docker_push'){
+           stage('docker_push'){
             steps{
-               withCredentials([string(credentialsId: 'docker_hub_cred', variable: 'docker_hub_cred')])  {
-               sh 'docker login -u megmahajan -p ${docker_hub_cred}'
+               withCredentials([string(credentialsId: 'Docker_hub_crred', variable: 'Docker_hub_crred')]) {
+               sh 'docker login -u megmahajan -p ${Docker_hub_crred}'
             }
-               sh 'docker push megmahajan/test'
-        }
-        stage('deploy_on_k8s') {
-            steps {
-                sh 'kubectl apply -f k8s_deploy.yaml'
-            }
+               sh 'docker push megmahajan/devopscap2'
         }
     }
+           stage('deploy_on_k8s') {
+            steps {
+                sh 'kubectl apply -f k8s_deploy.yml'
+            }
+        }
+}
+    
 }
