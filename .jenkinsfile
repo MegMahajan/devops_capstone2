@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('git_clone') {
             steps {
-                git url: 'http://github.com/MegMahajan/devops_capstone2.git/', branch: 'main'
+                //git url: 'http://github.com/MegMahajan/devops_capstone2.git/', branch: 'main'
                 echo 'Only git code is commited'
             }
         }
