@@ -1,0 +1,114 @@
+Started by user Megha Saraf
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/capstone2
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (git_clone)
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/capstone2/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url http://github.com/MegMahajan/devops_capstone2.git/ # timeout=10
+Fetching upstream changes from http://github.com/MegMahajan/devops_capstone2.git/
+ > git --version # timeout=10
+ > git --version # 'git version 2.17.1'
+ > git fetch --tags --progress -- http://github.com/MegMahajan/devops_capstone2.git/ +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision f93366ea893300bb348e3ed0302ee6d79749d788 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f f93366ea893300bb348e3ed0302ee6d79749d788 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main f93366ea893300bb348e3ed0302ee6d79749d788 # timeout=10
+Commit message: "Update k8s_deploy.yml"
+ > git rev-list --no-walk f93366ea893300bb348e3ed0302ee6d79749d788 # timeout=10
+[Pipeline] echo
+Only git code is commited
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (build docker image)
+[Pipeline] echo
+Docker job
+[Pipeline] sh
++ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+[Pipeline] sh
++ docker run -it -d ubuntu
+79be523da0f7a2c2f21a01668fdd01392e2d5681a42dde37c86f49759e11f551
+[Pipeline] sh
++ docker ps -q -a
++ docker rm -f 79be523da0f7
+79be523da0f7
+[Pipeline] sh
++ docker build -t megmahajan/devopscap2 .
+Sending build context to Docker daemon  1.249MB
+
+Step 1/2 : FROM hshar/webapp
+ ---> 0cbc1f535ed8
+Step 2/2 : ADD ./index.html /var/www/html
+ ---> Using cache
+ ---> 2f6a67c5af96
+Successfully built 2f6a67c5af96
+Successfully tagged megmahajan/devopscap2:latest
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (docker_push)
+[Pipeline] withCredentials
+Masking supported pattern matches of $Docker_hub_crred
+[Pipeline] {
+[Pipeline] sh
++ docker login -u megmahajan -p ****
+WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+WARNING! Your password will be stored unencrypted in /var/lib/jenkins/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] sh
++ docker push megmahajan/devopscap2
+Using default tag: latest
+The push refers to repository [docker.io/megmahajan/devopscap2]
+bbb0a2aeeae0: Preparing
+f9445cdd87ab: Preparing
+3e59a52a52d1: Preparing
+754d8c63561b: Preparing
+059ad60bcacf: Preparing
+8db5f072feec: Preparing
+67885e448177: Preparing
+ec75999a0cb1: Preparing
+65bdd50ee76a: Preparing
+8db5f072feec: Waiting
+67885e448177: Waiting
+ec75999a0cb1: Waiting
+65bdd50ee76a: Waiting
+3e59a52a52d1: Layer already exists
+059ad60bcacf: Layer already exists
+754d8c63561b: Layer already exists
+f9445cdd87ab: Layer already exists
+bbb0a2aeeae0: Layer already exists
+67885e448177: Layer already exists
+65bdd50ee76a: Layer already exists
+ec75999a0cb1: Layer already exists
+8db5f072feec: Layer already exists
+latest: digest: sha256:54ec512243fda21a21262f9ad3f4c18c0db617918880f6090da176fdaaa05195 size: 2192
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (deploy_on_k8s)
+[Pipeline] sh
++ kubectl apply -f k8s_deploy.yml
+service/website-service unchanged
+deployment.apps/website-deployment unchanged
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
