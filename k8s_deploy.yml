@@ -18,18 +18,17 @@ metadata:
   labels:
     app: website_app
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: website_app
+  replicas: 2
   template:
-     metadata:
+    metadata:
       labels:
         app: website_app
     spec:
       containers:
-        - name: website-container
+       —name: website-container
           image: megmahajan/devopscap2
           ports:
-            - containerPort: 80
-~                                 
+           —containerPort: 80
