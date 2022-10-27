@@ -28,7 +28,7 @@ spec:
         app: website_app
     spec:
       containers:
-       —name: website-container
-          image: megmahajan/devopscap2
-          ports:
-           —containerPort: 80
+       - name: website-container
+         image: megmahajan/devopscap2
+         ports:
+          - containerPort: 80
