@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git_clone') {
+            steps {
+                echo 'Only git code is commited'
+            }
+        }
+        stage('build docker image') {
+            steps {
+                echo 'Docker job'
+                sh 'docker ps -a'
+                sh 'docker run -it -d ubuntu'
+              
+                sh 'docker rm -f $(docker ps -q -a)'
+                sh 'docker build -t megmahajan/test .'
+            }
+        }
+        stage('docker_push'){
+            steps{
+               withCredentials([string(credentialsId: 'docker_hub_cred', variable: 'docker_hub_cred')])  {
+               sh 'docker login -u megmahajan -p ${docker_hub_cred}'
+            }
+               sh 'docker push megmahajan/test'
+        }
+        stage('deploy_on_k8s') {
+            steps {
+                sh 'kubectl apply -f k8s_deploy.yaml'
+            }
+        }
+    }
+}
